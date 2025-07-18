@@ -19,12 +19,16 @@ function App() {
           return item;
         }));
       }
+      function handelDeleteItems () {
+        setItems(items => items.splice(0, items.length));
+      };
+    
   return (
     <>
       <div className="app">
         <Logo />
         <Form onAddItems={handelAddItems} />
-        <PackingList items={items} onDeleteItems={handelDeleteItem}  onToggleItems={handelToggleItem} />
+        <PackingList items={items} onDeleteItems={handelDeleteItem}  onToggleItems={handelToggleItem} onClear={handelDeleteItems}  />
         <States items={items} />
       </div>
     </>
@@ -60,7 +64,7 @@ function Form({ onAddItems  }) {
     </form>
   );
 }
-function PackingList({ items, onDeleteItems, onToggleItems }) {
+function PackingList({ items, onDeleteItems, onToggleItems , onClear }) {
   const [sortBy , setSortBy] = useState('packed')
 
   let sortedItems;
@@ -74,11 +78,12 @@ function PackingList({ items, onDeleteItems, onToggleItems }) {
   if (sortBy === 'packed') {
     sortedItems = items.slice().sort((a,b) => Number(a.packed) - Number(b.packed))
   }
+
   return (
     <div className="list">
-      <ul>
+      <ul >
         {sortedItems.map((item) => (
-          <Item item={item} key={item.id} onDeleteItems={onDeleteItems} onToggleItems={onToggleItems} />
+          <Item item={item} key={item.id} onDeleteItems={onDeleteItems} onToggleItems={onToggleItems}  />
         ))}
       </ul>
       <div className='actions'>
@@ -86,12 +91,13 @@ function PackingList({ items, onDeleteItems, onToggleItems }) {
           <option value='input'>Sort by input order</option>
           <option value='description'>Sort by description</option>
           <option value='packed'>Sort by packed status</option>
-
         </select>
+        <button onClick={onClear} >Clear list</button>
       </div>
     </div>
   );
 }
+
 
 function Item({ item , onDeleteItems, onToggleItems }) {
 
